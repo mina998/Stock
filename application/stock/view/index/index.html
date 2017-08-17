@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {switch name="$Request.param.action"}
+            {case value="0"}出库{/case}
+            {case value="1"}进货{/case}
+            {default /}库存记录
+        {/switch}
+    </title>
+    <!-- ZUI 标准版压缩后的 CSS 文件 -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/zui/1.7.0/css/zui.min.css">
+    <link href="//cdn.bootcss.com/zui/1.7.0/lib/datatable/zui.datatable.min.css" rel="stylesheet">
+
+    <!-- ZUI Javascript 依赖 jQuery -->
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/jquery/jquery.js"></script>
+    <!-- ZUI 标准版压缩后的 JavaScript 文件 -->
+    <script src="//cdn.bootcss.com/zui/1.7.0/js/zui.min.js"></script>
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/datatable/zui.datatable.min.js"></script>
+    <style>
+        td{vertical-align:middle!important}
+    </style>
+</head>
+<body>
+	{include file="common/header" /}
+
+    <div class="container-fluid">
+    <div style="background: #f7f7f7; border: 1px solid #dedede; border-radius: 2px; padding: 10px;">
+        <div class="row">
+            <div class="col-sm-1" style="font-weight: bold; font-size: 14px;text-indent: 3px">库存记录</div>
+
+            <div class="col-sm-1 btn-group" style="font-weight: bold; font-size: 14px;text-indent: 3px">
+
+                {eq name="$Request.param.action" value="1"}
+                <a class="btn btn-sm btn-primary" href="{:Url('index/index?action=1')}">进货</a>
+                <a class="btn btn-sm" href="{:Url('index/index?action=0')}">出库</a>  
+                {/eq}
+
+                {eq name="$Request.param.action" value="0"}
+                <a class="btn btn-sm" href="{:Url('index/index?action=1')}">进货</a>
+                <a class="btn btn-sm btn-primary" href="{:Url('index/index?action=0')}">出库</a>
+                {/eq}
+
+            </div>
+        </div>
+
+        <hr style="margin-top: 8px">
+
+        <table class="table table-bordered table-condensed datatable" style="background: #fff">
+            <thead>
+                <tr>
+                    <!-- 以下两列左侧固定 -->
+                    <th data-type="number" data-width="50">ID</th>
+
+                    {if condition="$Request.param.action eq NULL"}
+					<th class="sort-disabled" data-width="80">参考链接</th>
+                    {/if}
+
+                    <th data-width="120">供应商货号</th>
+                    <th data-width="120">中文名</th>
+                    <th class="sort-disabled" data-width="60">图片</th>
+                    <th data-width="110">货号</th>
+                    <th class="sort-disabled" data-width="80">颜色</th>
+                    <th class="sort-disabled" data-width="80">尺码</th>
+                    <th data-type="number" data-width="80">数量</th>
+                    
+                    {eq name="$Request.param.action" value="1"}
+                    <th class="sort-disabled" data-width="80">进货</th>
+                    <th class="sort-disabled" data-width="62">操作</th>   
+                    {/eq}
+
+                    {eq name="$Request.param.action" value="0"}
+                    <th class="sort-disabled" data-width="80">出库</th>
+                    <th class="sort-disabled" data-width="62">操作</th>
+                    {/eq}
+
+                    <th class="sort-disabled"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {volist name="data" id="vo"}
+                <tr>
+                    <td class="id"><a href="{:Url('index/modify',['id'=>$vo->id])}">{$vo->id}</a></td>
+
+                    {if condition="$Request.param.action eq NULL"}
+					<td class="in">{if condition="$vo->urls"}<a class="urls" href="">查看</a>{/if}</td>
+                    {/if}
+
+                    <td class="in mark">{$vo->mark}</td>
+                    <td>{$vo->name}</td>
+                    <td class="in image">
+                        {compare name="$vo->image" value="" type="neq"}<img src="/uploads/images/{$vo->image}" width="50">{/compare}
+                    </td>
+                    <td>{$vo->huohao}</td>
+                    <td>{$vo->color}</td>
+                    <td>{$vo->sizes}</td>
+                    <td class="num">{$vo->num}</td>
+
+                    {in name="$Request.param.action" value="0,1"}
+                    <td class="in"><input type="text" style="width: 100%"></td>
+                    <td class="in"><input type="submit" class="btn" value="保存"></td>
+                    {/in}
+
+                    <td></td>
+                </tr>
+                {/volist}
+            </tbody>
+        </table>
+
+    </div>
+    <div id="image" style="display: none;width: 300px;height: 300px; overflow: hidden;border:1px solid #ffe7bc"></div>
+    <div id="urls" style="display: none;min-width: 200px;min-height: 50px; padding: 10px; font-size: 14px; line-height: 1.5; background: #fce7bc; overflow: hidden;border:1px solid #ffe7bc"></div>
+</body>
+</html>
+<script>
+
+    $('table.datatable').datatable({
+        checkable: true,
+        sortable: true,
+        fixedHeader:true
+    });
+
+
+    $(".in").click(function(event){
+        return false;
+    });
+
+
+    $('.image > img').click(function(){
+
+        $x = $(this).offset().top-10;
+        $y = $(this).offset().left-10;
+
+        $('#image').css({'position':'absolute','display':'block','left':$y+6,'top':$x+5}).html('<img src="'+$(this).attr('src')+'"/>')
+
+    })
+
+    $('#image').click(function(){
+        $(this).hide();
+    })
+
+
+    $('.mark').dblclick(function(){
+
+        $(this).attr('contenteditable','true').css('background','#efd').blur(function(){
+
+            $id  = $(this).prev('td').text();
+            $txt = $(this);
+            $(this).attr('contenteditable','false').css('background','')
+
+
+            $.post("{:Url('index/upmark')}", { id: $id,mark: $txt.text() }, function(data){
+
+                $txt.text(data);
+            })
+
+        })
+    })
+
+
+    $(":submit").click(function(){
+
+        $id  = $(this).parent('td').siblings('.id').text()
+        $num = $(this).parent('td').siblings('.num')
+        $in  = $(this).parent('td').prev('td').children('input').val()
+        $type= {$Request.param.action}
+
+
+        $.post("{:Url('index/update')}", { id: $id, num: $num.text(), in: $in, type: $type }, function(data){
+
+
+            if (isNaN(data)) {
+                
+                alert(data)
+            　　return false
+
+            }else{
+
+                $num.text(data)
+            }
+        })
+
+    })
+
+
+    $('a.urls').click(function(){
+    	$id  = $(this).parent('td').siblings('.id').text()
+
+		$x = $(this).offset().top-21;
+        $y = $(this).offset().left-5;
+
+
+		$.get("{:Url('index/selurls')}?id="+$id, function(data){
+
+		    $('#urls').css({'position':'absolute','display':'block','left':$y,'top':$x}).html(data)
+		})
+
+    	return false
+
+    })
+
+    $('#urls').click(function(){
+        $(this).hide();
+    })
+
+</script>

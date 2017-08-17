@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>更新</title>
+    <!-- ZUI 标准版压缩后的 CSS 文件 -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/zui/1.7.0/css/zui.min.css">
+    <!-- ZUI Javascript 依赖 jQuery -->
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/jquery/jquery.js"></script>
+    <!-- ZUI 标准版压缩后的 JavaScript 文件 -->
+    <script src="//cdn.bootcss.com/zui/1.7.0/js/zui.min.js"></script>
+</head>
+<body>
+	{include file="common/header" /}
+
+    <div class="container-fluid">
+    <div style="background: #f7f7f7; border: 1px solid #dedede; border-radius: 2px; padding: 10px;">
+        <div class="row">
+            <div class="col-sm-1" style="font-weight: bold; font-size: 14px;text-indent: 3px">更新ID为：{$row->id}</div>
+        </div>
+
+        <hr style="margin-top: 8px">
+
+
+        <form class="form-horizontal" enctype="multipart/form-data" method="post" action="">
+            <div class="form-group">
+                <label class="col-sm-1">货号</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" name="huohao" value="{$row->huohao}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1">名称</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" name="name" value="{$row->name}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputAccount4" class="col-sm-1">图片</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="file" class="form-control" name="image" />
+                </div>
+            </div>    
+            <div class="form-group">
+                <label class="col-sm-1">颜色</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" name="color" value="{$row->color}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1">尺码</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" name="sizes" value="{$row->sizes}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1">链接</label>
+                <div class="col-md-6 col-sm-10">
+                    <textarea class="form-control" rows="5" name="urls" placeholder="一行一条">{$row->urls}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-1 col-sm-10">
+                    <button type="submit" class="btn btn-default">更新</button>
+                </div>
+            </div>
+
+        </form>
+
+
+
+
+
+
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>进出货记录</title>
+    <!-- ZUI 标准版压缩后的 CSS 文件 -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/zui/1.7.0/css/zui.min.css">
+    <link href="//cdn.bootcss.com/zui/1.7.0/lib/datatable/zui.datatable.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/zui/1.7.0/lib/datetimepicker/datetimepicker.min.css" rel="stylesheet">
+
+    <!-- ZUI Javascript 依赖 jQuery -->
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/jquery/jquery.js"></script>
+    <!-- ZUI 标准版压缩后的 JavaScript 文件 -->
+    <script src="//cdn.bootcss.com/zui/1.7.0/js/zui.min.js"></script>
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/datatable/zui.datatable.min.js"></script>
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/datetimepicker/datetimepicker.min.js"></script>
+
+</head>
+<body>
+	{include file="common/header" /}
+
+    <div class="container-fluid">
+        <div style="background: #f7f7f7; border: 1px solid #dedede; border-radius: 2px; padding: 10px;">
+            <div class="row">
+                <div class="col-sm-10" style="font-weight: bold; font-size: 14px;text-indent: 3px">
+
+                    <div class="form-group form-group-mini">
+
+                        <div class="col-sm-1" style="margin-left: -13px;">
+                            {eq name="$Request.param.type" value="1"}
+                            <a class="btn btn-sm btn-primary" href="{:Url('index/lists?type=1')}">进货</a>
+                            <a class="btn btn-sm" href="{:Url('index/lists?type=0')}">出库</a>  
+                            {/eq}
+
+                            {eq name="$Request.param.type" value="0"}
+                            <a class="btn btn-sm" href="{:Url('index/lists?type=1')}">进货</a>
+                            <a class="btn btn-sm btn-primary" href="{:Url('index/lists?type=0')}">出库</a>
+                            {/eq}
+                        </div>
+                        
+                        <form method="post" class="form-condensed">
+                            <div class="col-sm-1">
+                                <input type="text" name="start" class="form-control form-date" value="{$Request.param.start}" placeholder="开始日期">
+                            </div>
+                            <div class="col-sm-1">
+                                <input type="text" name="end" class="form-control form-date" value="{$Request.param.end}" placeholder="结束日期">
+                            </div>
+                            <div class="col-sm-1">
+                                <button type="submit" class="btn btn-primary">查询</button>
+                            </div>
+                        </form>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <hr style="margin-top: 8px">
+
+            <table class="table table-bordered table-condensed datatable" style="background: #fff">
+                <thead>
+                    <tr>
+                        <!-- 以下两列左侧固定 -->
+                        <th class="sort-disabled" data-width="50">ID</th>
+                        <th class="sort-disabled" data-width="60">图片</th>
+                        <th class="sort-disabled" data-width="110">日期</th>
+                        <th data-width="110">货号</th>
+                        <th class="sort-disabled" data-width="80">颜色</th>
+                        <th class="sort-disabled" data-width="80">尺码</th>
+                        <th class="sort-disabled" data-width="50">数量</th>
+                        <th class="sort-disabled"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {volist name="data" id="vo"}
+                    <tr>
+                        <td class="id">{$vo->id}</td>
+                        <td>
+                            {compare name="$vo->main->image" value="" type="neq"}<img src="/uploads/images/{$vo->main->image}" width="50">{/compare}
+                        </td>
+                        <td>{$vo->addtime}</td>
+                        <td>{$vo->main->huohao}</td>
+                        <td>{$vo->main->color}</td>
+                        <td>{$vo->main->sizes}</td>
+                        <td class="num">{$vo->num}</td>
+                        <td></td>
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+
+
+
+
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    $('table.datatable').datatable({
+        sortable: true,
+        fixedHeader:true
+    });
+
+    // 仅选择日期
+    $(".form-date").datetimepicker(
+    {
+        language:  "zh-CN",
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        format: "yyyy-mm-dd"
+    });
+
+</script>
